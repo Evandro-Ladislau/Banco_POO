@@ -35,6 +35,12 @@ $usuario_logado->setId($_SESSION['id']);
                         </li>
                         
                     </ul>
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                        <a href="movimentacao.php" class="nav-link text-white">Conta </a>
+                        </li>
+                        
+                    </ul>
                     <div class="align-self-end">
                         <ul class="navbar-nav">
                             <li class="nav-item">

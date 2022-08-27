@@ -16,9 +16,6 @@ include_once 'config.php';
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                        <a href="<?php echo $base."/cadastrarEmpresa.php" ?>" class="nav-link text-white">Cadastrar Empresa</a>
-                        </li>
-                        <li class="nav-item">
                         <a href="<?php echo $base."/index.php" ?>" class="nav-link text-white">Cadastrar Usuario</a>
                         </li>
                     </ul>

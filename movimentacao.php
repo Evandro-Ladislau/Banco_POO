@@ -19,6 +19,29 @@ $usuario_logado = new Usuario(
 );
 $usuario_logado->setId($_SESSION['id']);
 
+$result_conta = $usuario_logado->AcessarConta($usuario_logado->getId());
+
+if($result_conta){
+
+    foreach($result_conta as $value) {
+
+        $result_conta_usuario = $value;
+    }
+    $conta_usuario_logado = new Conta($result_conta_usuario['empresa_id'],
+                                  $result_conta_usuario['usuario_id'],
+                                  $result_conta_usuario['senha'],
+                                  $result_conta_usuario['saldo']
+                                    );
+    
+}else{
+        $_SESSION['msg'] = "Você Não tem conta Aberta!";
+        $url_destino = $base.'/home.php';
+        header("Location: $url_destino");
+}
+
+
+
+
 ?>
 
 <body>
@@ -86,7 +109,7 @@ $usuario_logado->setId($_SESSION['id']);
                             </select>
                         </div>
                         <div class="form-floating mb-3">
-                            <input name="deposito" type="number" id="txtdeposito" class="form-control" placeholder=" ">
+                            <input name="valor" type="number" id="txtdeposito" class="form-control" placeholder=" ">
                             <label for="txtSenha">Valor transação</label>
                         </div>
                         
@@ -97,8 +120,14 @@ $usuario_logado->setId($_SESSION['id']);
                         $SendTransacao = filter_input(INPUT_POST, 'SendTransacao');
 
                         if($SendTransacao){
-                            $transacao = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+
+                            $transacao_id = filter_input(INPUT_POST, 'id');
+                            $transacao_valor = filter_input(INPUT_POST, 'valor');
                             
+                    
+                            $conta_usuario_logado->Depositar($transacao_valor);
+                            
+                            var_dump($conta_usuario_logado->getSaldo());
                           
                         }
                     ?>

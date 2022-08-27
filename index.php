@@ -19,9 +19,6 @@ include_once 'include\head.php';
                 <div class="navbar-collapse collapse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                        <a href="<?php echo $base."/index.php" ?>" class="nav-link text-white">Conta</a>
-                        </li>
-                        <li class="nav-item">
                         
                         </li>
                     </ul>
@@ -34,8 +31,6 @@ include_once 'include\head.php';
                                 <a href="<?php echo $base."/login.php" ?>" class="nav-link text-white">Entrar</a>
                             </li>
                             <li class="nav-item">
-                                <span class="badge rounded-pill bg-light text-danger position-absolute ms-4 mt-0"
-                                    title="5 produto(s) no carrinho"><small>5</small></span>
                                 <a href="/carrinho.html" class="nav-link text-white">
                                     <svg class="bi" width="24" height="24" fill="currentColor">
                                         <use xlink:href="/bi.svg#cart3" />

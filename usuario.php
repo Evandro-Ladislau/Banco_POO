@@ -60,5 +60,21 @@ class Usuario extends Pessoa {
         }
 
 
+        public function AcessarConta($usuario_id)
+        {
+            $result = array();
+            $this->conn = new Conexao();
+            $stmt = $this->conn->pdo->prepare("SELECT * FROM conta WHERE usuario_id=:usuario_id");
+            $stmt->bindValue(":usuario_id", $usuario_id);
+            $stmt->execute();
+            if($stmt->rowCount() > 0){
+
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return $result;
+        }else{
+
+            return false;
+        }
+    }
     
 }
