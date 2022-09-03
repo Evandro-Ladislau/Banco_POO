@@ -49,7 +49,7 @@ if($SendLogin){
        echo $url_destino;
        header("Location: $url_destino");
     }else{
-        $_SESSION['msg'] = "Usuário ou Senha inválida!";
+        $_SESSION['msg'] = "<div class='alert alert-danger'> Usuário ou Senha inválida!</div>";
         $url_destino = $base.'/login.php';
         header("Location: $url_destino");
     }

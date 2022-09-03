@@ -23,11 +23,11 @@ if($SendCadUsuario){
 
     if (!$result) {
         $usuario->CadastrarUsuario();
-        $_SESSION['msg'] = "Usuario Cadastrado com Sucesso!";
+        $_SESSION['msg'] = "<div class='alert alert-success'> Usuario Cadastrado com Sucesso!</div>";
         $url_destino = $base.'/login.php';
         header("Location: $url_destino");
     }else{
-        echo "Email já existe no cadastro!";
+        echo "<div class='alert alert-danger'> Email já existe no cadastro!</div>";
     }
     
 

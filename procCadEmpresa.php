@@ -22,7 +22,7 @@ if (!$result) {
     header("Location: $url_destino");
 
 }else{
-    echo "Empresa já cadastrada!";
+    echo "<div class='alert alert-danger'> Empresa já cadastrada!</div>";
 }
 
 }

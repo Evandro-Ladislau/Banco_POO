@@ -8,6 +8,7 @@ class Conta extends Banco {
     private $empresa_id;
     private $usuario_id;
     private $saldo;
+    private $transacao_id;
     private $senha;
     private $cancelado;
 
@@ -53,6 +54,14 @@ class Conta extends Banco {
         $this->saldo = $saldo;
     }
 
+    public function getTransacao_id(){
+        return $this->transacao_id;
+    }
+
+    public function setTransacao_id($transacao_id){
+        $this->transacao_id = $transacao_id;
+    }
+
     public function getCancelado(){
         return $this->cancelado;
     }
@@ -65,7 +74,10 @@ class Conta extends Banco {
 
         $result = array();
         $this->conn = new Conexao();
-        $stmt = $this->conn->pdo->prepare("SELECT * FROM conta WHERE usuario_id=:usuario_id AND cancelado=0");
+        $stmt = $this->conn->pdo->prepare("SELECT c_user.saldo, c_user.created hora, tran_user.nome tram_nome
+        FROM conta c_user
+        INNER JOIN transacao tran_user ON tran_user.id=c_user.transacao_id
+        WHERE c_user.usuario_id=:usuario_id AND c_user.cancelado=0");
         $stmt->bindValue(":usuario_id", $usuario_logado_id);
         $stmt->execute();
 
@@ -79,16 +91,37 @@ class Conta extends Banco {
         
     }
 
-    public function CadastrarConta(){
+    public function BuscarHistoricoMovimentacao($usuario_logado_id){
+
+        $result = array();
+        $this->conn = new Conexao();
+        $stmt = $this->conn->pdo->prepare("SELECT mov.valor, mov.created, tran_user.nome 
+        FROM movimentacao mov 
+        INNER JOIN  transacao tran_user ON tran_user.id=mov.transacao_id
+        WHERE usuario_id=:usuario_id");
+        $stmt->bindValue(":usuario_id", $usuario_logado_id);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
+
+        }else{
+            return false;
+        }
+    }
+
+    public function CadastrarConta($transacao_id){
 
        $this->conn = new Conexao();
-       $stmt = $this->conn->pdo->prepare('INSERT INTO conta (empresa_id, usuario_id, saldo, senha, cancelado)
-                                     VALUES (:empresa_id, :usuario_id, :saldo, :senha, :cancelado) '
+       $stmt = $this->conn->pdo->prepare('INSERT INTO conta (empresa_id, usuario_id, saldo, transacao_id, senha, cancelado, created)
+                                     VALUES (:empresa_id, :usuario_id, :saldo, :transacao_id , :senha, :cancelado, NOW()) '
                                      );
 
         $stmt->bindValue(":empresa_id", $this->getEmpresa_id());
         $stmt->bindValue(":usuario_id", $this->getUsuario_id());
         $stmt->bindValue(":saldo",$this->getSaldo());
+        $stmt->bindValue(":transacao_id", $transacao_id);
         $stmt->bindValue(":senha", $this->getSenha());
         $stmt->bindValue(":cancelado", $this->getCancelado());
         $stmt->execute();
@@ -96,14 +129,32 @@ class Conta extends Banco {
 
     }
 
-    
+    public function HistoricoMovimentacao($transacao_id, $transacao_valor){
+
+        $this->conn = new Conexao();
+        $stmt = $this->conn->pdo->prepare('INSERT INTO movimentacao (empresa_id, usuario_id, transacao_id, valor, senha, cancelado, created)
+                                      VALUES (:empresa_id, :usuario_id, :transacao_id, :valor, :senha, :cancelado, NOW()) '
+                                      );
+ 
+         $stmt->bindValue(":empresa_id", $this->getEmpresa_id());
+         $stmt->bindValue(":usuario_id", $this->getUsuario_id());
+         $stmt->bindValue(":transacao_id", $transacao_id);
+         $stmt->bindValue(":valor",$transacao_valor);
+         $stmt->bindValue(":senha", $this->getSenha());
+         $stmt->bindValue(":cancelado", $this->getCancelado());
+         $stmt->execute();
+         return true;
+ 
+     }
+
 
     public function Depositar($deposito){
         if ($this->cancelado == true) {
             return "Por Favor, abra uma conta antes de fazer um depósito!"."<br>";
         }else{
-            $this->saldo = $this->saldo + $deposito;
-            return "Deposito Efetuado com Sucesso"."<br>";
+            
+            $this->setSaldo($this->getSaldo() + $deposito);
+            return "Valor R$". number_format($deposito, 2, ',', ' ') . " Depositado com sucesso!";
         }
         
     }
@@ -113,11 +164,11 @@ class Conta extends Banco {
         if ($this->cancelado == false) {
             
             if($this->saldo >= $saque){
-                $this->saldo = $this->saldo - $saque;
-                return "Saque Efetuado com Sucesso!"."<br>";
+                $this->setSaldo($this->getSaldo() - $saque);
+                return true;
             }else{
 
-                return "Você não tem saldo suficiente"."<br>";
+                return false;
             }
 
         }
@@ -127,9 +178,9 @@ class Conta extends Banco {
         if (($this->cancelado == false) && ($this->saldo == 0)) {
             
             $this->cancelado = true;
-            return "Conta cancelada com sucesso";
+            return true;
         }else{
-            echo "Retire o dinheiro para efetuar o fechamento da conta"."<br>";
+            return false;
         }
     }
 

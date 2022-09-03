@@ -21,12 +21,15 @@ $usuario_logado->setId($_SESSION['id']);
 
 $result_conta = $usuario_logado->AcessarConta($usuario_logado->getId());
 
+
 if($result_conta){
 
     foreach($result_conta as $value) {
 
         $result_conta_usuario = $value;
     }
+
+    
     $conta_usuario_logado = new Conta($result_conta_usuario['empresa_id'],
                                   $result_conta_usuario['usuario_id'],
                                   $result_conta_usuario['senha'],
@@ -34,7 +37,7 @@ if($result_conta){
                                     );
     
 }else{
-        $_SESSION['msg'] = "Você Não tem conta Aberta!";
+        $_SESSION['msg'] = "<div class='alert alert-danger'> Você Não tem conta Aberta! </div>";
         $url_destino = $base.'/home.php';
         header("Location: $url_destino");
 }
@@ -55,15 +58,24 @@ if($result_conta){
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a href="#" class="nav-link text-white"><?php echo "Bem Vindo " . $usuario_logado->getNome(); ?> </a>
+                            <a href="#" class="nav-link text-white"><?php echo "Bem-Vindo " . $usuario_logado->getNome(); ?> </a>
+                        </li>
+
+                    </ul>
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link text-white"><?php echo "Saldo Atual R$ " . $conta_usuario_logado->getSaldo(); ?> </a>
+                        </li>
+
+                    </ul>
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a href="<?php echo $base . "/logout.php" ?>" class="nav-link text-white"> Fechar Conta </a>
                         </li>
 
                     </ul>
                     <div class="align-self-end">
                         <ul class="navbar-nav">
-                            <li class="nav-item">
-
-                            </li>
                             <li class="nav-item">
                                 <a href="<?php echo $base . "/logout.php" ?>" class="nav-link text-white">Sair</a>
                             </li>
@@ -83,18 +95,13 @@ if($result_conta){
             <div class="container">
                 <div class="row justify-content-center">
                     <form method="POST"  class="col-sm-10 col-md-8 col-lg-6">
-                        <h1>Extrato da Conta</h1>
-                        <?php
-                        if (isset($_SESSION['msg'])) {
-                            echo $_SESSION['msg'];
-                            unset($_SESSION['msg']);
-                        }
-                        ?>
+                        <h1>Movimentação Bancária</h1>
+                        
                         <div class="form-floating mb-3">
 
                         <div class="form-floating mb-3">
                         <select name="id" id="" class="form-control">
-                                <option selected>Selectione</option>
+                                <option selected>Selecione</option>
                                 
                                 <?php
                                 $conn = new Conexao();
@@ -110,7 +117,7 @@ if($result_conta){
                         </div>
                         <div class="form-floating mb-3">
                             <input name="valor" type="number" id="txtdeposito" class="form-control" placeholder=" ">
-                            <label for="txtSenha">Valor transação</label>
+                            <label for="txtSenha">Valor da transação</label>
                         </div>
                         
                         <input name="SendTransacao" type="submit" class="btn btn-lg btn-danger">
@@ -118,19 +125,69 @@ if($result_conta){
                     </form>
                     <?php
                         $SendTransacao = filter_input(INPUT_POST, 'SendTransacao');
-
+                        
                         if($SendTransacao){
 
                             $transacao_id = filter_input(INPUT_POST, 'id');
                             $transacao_valor = filter_input(INPUT_POST, 'valor');
                             
-                    
-                            $conta_usuario_logado->Depositar($transacao_valor);
-                            
-                            var_dump($conta_usuario_logado->getSaldo());
-                          
+                            switch ($transacao_id) {
+                                case 1:
+                                    $_SESSION['msg'] = $conta_usuario_logado->Depositar($transacao_valor);
+                                    $conta_usuario_logado->CadastrarConta($transacao_id);
+                                    
+                                    $conta_usuario_logado->HistoricoMovimentacao($transacao_id, $transacao_valor);
+
+                                    $url_destino = $base.'/movimentacao.php';
+                                    echo $url_destino;
+                                    header("Location: $url_destino");
+                                    break;
+
+                                    case 2:
+                                        $reuslt_sacar = $conta_usuario_logado->Sacar($transacao_valor);
+                                        if ($reuslt_sacar == false) {
+                                            $_SESSION['msg'] = "Você não tem saldo suficiente! ";
+                                        }else{
+                                           
+                                            $conta_usuario_logado->CadastrarConta($transacao_id);
+                                            $conta_usuario_logado->HistoricoMovimentacao($transacao_id, $transacao_valor);
+                                            $_SESSION['msg'] = "Saque de R$". number_format($transacao_valor, 2, ',', ' ') . " Efetuado com Sucesso!"."<br>";
+                                        }
+
+                                        $url_destino = $base.'/movimentacao.php';
+                                        echo $url_destino;
+                                        header("Location: $url_destino");
+                                        break;    
+                                
+                                        case 3:
+                                            $result_fechar_conta = $conta_usuario_logado->FecharConta();
+                                            if($result_fechar_conta){
+                                                $_SESSION['msg'] = "<div class='alert alert-danger'> Conta Fechada com Sucesso! </div>";
+                                            }else{
+                                                $_SESSION['msg'] = "<div class='alert alert-danger'> Retire o dinheiro antes de fechar a conta!</div>";
+                                            }
+
+                                            $url_destino = $base.'/movimentacao.php';
+                                            echo $url_destino;
+                                            header("Location: $url_destino");
+                                            break;
+                                default:
+                                    $_SESSION['msg'] = "Nenhuma das opções são válidas, por favor entre em contato com o SAC!";
+                                    break;
+                            }
+
                         }
-                    ?>
+                    ?>  
+                    <div class="form-floating mb-8">
+                        <?php
+                        if(isset($_SESSION['msg'] )){
+                            echo $_SESSION['msg'];
+                        }
+                        $historico_contas = $conta_usuario_logado->BuscarHistoricoMovimentacao($usuario_logado->getId());
+                         
+                        ?>
+                    </div>
+                    
                     <div class="form-floating mb-3">  
                     <table class="table ">
                                 <thead>
@@ -138,28 +195,25 @@ if($result_conta){
                                         <th scope="col">Histótico</th>
                                         <th scope="col">Transação</th>
                                         <th scope="col">Valor</th>
-                                        <th scope="col">Saldo Atual</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Depositar</td>
-                                        <td>784,00</td>
-                                        <td>5000,00</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>Jacob</td>
-                                        <td>Thornton</td>
-                                        <td>@fat</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>Larry</td>
-                                        <td>the Bird</td>
-                                        <td>@twitter</td>
-                                    </tr>
+                                    <?php
+
+                                        
+                                        foreach ($historico_contas as $value) {
+                                            $historico_conta_usuario = $value;
+                                           ?>
+                                           
+                                            <tr>
+                                            <th scope="row"><?php echo date('d/m/y H:i:s', strtotime($historico_conta_usuario['created']))?></th>
+                                            <td><?php echo $historico_conta_usuario['nome']?></td>
+                                            <td><?php echo $historico_conta_usuario['valor']?></td>
+                                        </tr>
+
+                                    <?php
+                                        }
+                                    ?>
                                 </tbody>
                             </table>
                     </div>
@@ -171,7 +225,7 @@ if($result_conta){
             <div class="container">
                 <div class="row py-3">
                     <div class="col-12 col-md-4 text-center">
-                        &copy; 2020 - Quitanda Online Ltda ME<br>
+                        &copy; 2020 - Banco Renderize Ltda ME<br>
                         Rua Virtual Inexistente, 171, Compulândia/PC <br>
                         CPNJ 99.999.999/0001-99
                     </div>

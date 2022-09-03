@@ -20,20 +20,21 @@ if($SendAbrirConta){
         $conta_ativa = $nova_conta->BuscarContas($_SESSION['id']);
 
         if($conta_ativa){
-        $_SESSION['msg'] = "Você já possiu conta ativa!";
+        $_SESSION['msg'] = "<div class='alert alert-danger' Você já possiu conta ativa! </div>";
         $url_destino = $base.'/home.php';
         header("Location: $url_destino");
 
         }else{
 
-        $result_cadastro_conta = $nova_conta->CadastrarConta();
-        $_SESSION['msg'] = "A conta foi criada com sucesso!";
+        $result_cadastro_conta = $nova_conta->CadastrarConta(1);
+        
+        $_SESSION['msg'] = "<div class='alert alert-success'> A conta foi criada com sucesso!</div>";
         $url_destino = $base.'/movimentacao.php';
         header("Location: $url_destino");
         }
     
     }else{
-        $_SESSION['msg'] = "Informe um valor de deposito para abrir conta!";
+        $_SESSION['msg'] = "<div class='alert alert-danger'> Informe um valor de deposito para abrir conta!</did>";
         $url_destino = $base.'/home.php';
         header("Location: $url_destino");
     }

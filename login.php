@@ -70,11 +70,7 @@ include_once 'config.php';
                             class="btn btn-lg btn-danger">
 
                         <p class="mt-3">
-                            Ainda não é cadastrado? <a href="/cadastro.html">Clique aqui</a> para se cadastrar.
-                        </p>
-
-                        <p class="mt-3">
-                            Esqueceu sua senha? <a href="/recuperarsenha.html">Clique aqui</a> para recuperá-la.
+                            Ainda não é cadastrado? <a href="<?php echo $base."/index.php" ?>">Clique aqui</a> para se cadastrar.
                         </p>
                     </form>
                 </div>
@@ -85,7 +81,7 @@ include_once 'config.php';
             <div class="container">
                 <div class="row py-3">
                     <div class="col-12 col-md-4 text-center">
-                        &copy; 2020 - Quitanda Online Ltda ME<br>
+                        &copy; 2020 - Banco Renderize Ltda ME<br>
                         Rua Virtual Inexistente, 171, Compulândia/PC <br>
                         CPNJ 99.999.999/0001-99
                     </div>

@@ -40,7 +40,7 @@ class Conexao {
     public function BuscarTransacao(){
 
         $result = array();
-        $stmt = $this->pdo->prepare("SELECT * FROM transacao");
+        $stmt = $this->pdo->prepare("SELECT * FROM transacao WHERE id <= 2");
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
