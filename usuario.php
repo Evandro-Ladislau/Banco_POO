@@ -64,7 +64,7 @@ class Usuario extends Pessoa {
         {
             $result = array();
             $this->conn = new Conexao();
-            $stmt = $this->conn->pdo->prepare("SELECT * FROM conta WHERE usuario_id=:usuario_id ");
+            $stmt = $this->conn->pdo->prepare("SELECT * FROM conta WHERE usuario_id=:usuario_id AND cancelado=0 ");
             $stmt->bindValue(":usuario_id", $usuario_id);
             $stmt->execute();
             if($stmt->rowCount() > 0){

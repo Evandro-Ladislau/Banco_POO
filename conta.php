@@ -98,7 +98,7 @@ class Conta extends Banco {
         $stmt = $this->conn->pdo->prepare("SELECT mov.valor, mov.created, tran_user.nome 
         FROM movimentacao mov 
         INNER JOIN  transacao tran_user ON tran_user.id=mov.transacao_id
-        WHERE usuario_id=:usuario_id");
+        WHERE usuario_id=:usuario_id AND mov.cancelado=0");
         $stmt->bindValue(":usuario_id", $usuario_logado_id);
         $stmt->execute();
 
@@ -149,7 +149,7 @@ class Conta extends Banco {
 
 
     public function Depositar($deposito){
-        if ($this->cancelado == true) {
+        if ($this->cancelado == 1) {
             return "Por Favor, abra uma conta antes de fazer um depósito!"."<br>";
         }else{
             
@@ -161,7 +161,7 @@ class Conta extends Banco {
 
     public function Sacar($saque){
 
-        if ($this->cancelado == false) {
+        if ($this->cancelado == 0) {
             
             if($this->saldo >= $saque){
                 $this->setSaldo($this->getSaldo() - $saque);
@@ -174,11 +174,17 @@ class Conta extends Banco {
         }
     }
 
-    public function FecharConta(){
-        if (($this->cancelado == false) && ($this->saldo == 0)) {
+    public function FecharConta($usuario_id){
+        if (($this->cancelado == 0) && ($this->saldo == 0)) {
             
-            $this->cancelado = true;
-            return true;
+            $this->cancelado = 1;
+
+        $this->conn = new Conexao();
+        $stmt = $this->conn->pdo->prepare('UPDATE conta SET cancelado=1 WHERE usuario_id=:usuario_id');
+        $stmt->bindValue(':usuario_id', $usuario_id);
+        $stmt->execute();
+        return true;
+
         }else{
             return false;
         }

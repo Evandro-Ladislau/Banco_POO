@@ -31,7 +31,7 @@ $usuario_logado->setId($_SESSION['id']);
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                        <a href="#" class="nav-link text-white"><?php echo "Bem Vindo ". $usuario_logado->getNome(); ?> </a>
+                        <a href="#" class="nav-link text-white"><?php echo "Bem-Vindo ". $usuario_logado->getNome(); ?> </a>
                         </li>
                         
                     </ul>
@@ -95,7 +95,7 @@ $usuario_logado->setId($_SESSION['id']);
                             <label for="txtSenha">Senha</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input name="deposito" type="number" id="txtdeposito" class="form-control" placeholder=" ">
+                            <input name="deposito" type="number" pattern="^[R$\-\s]*[\d\.]*?([\,]\d{0,2})?\s*$" id="txtdeposito" class="form-control" placeholder=" ">
                             <label for="txtSenha">Valor Depósito</label>
                         </div>
                         

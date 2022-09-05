@@ -37,7 +37,7 @@ if($result_conta){
                                     );
     
 }else{
-        $_SESSION['msg'] = "<div class='alert alert-danger'> Você Não tem conta Aberta! </div>";
+        $_SESSION['msg'] = "<div class='alert alert-danger'> Você não tem conta Aberta! </div>";
         $url_destino = $base.'/home.php';
         header("Location: $url_destino");
 }
@@ -70,7 +70,7 @@ if($result_conta){
                     </ul>
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a href="<?php echo $base . "/logout.php" ?>" class="nav-link text-white"> Fechar Conta </a>
+                            <a href="<?php echo $base . "/Fechar_conta.php" ?>" class="nav-link text-white"> Fechar Conta </a>
                         </li>
 
                     </ul>
@@ -116,7 +116,7 @@ if($result_conta){
                             </select>
                         </div>
                         <div class="form-floating mb-3">
-                            <input name="valor" type="number" id="txtdeposito" class="form-control" placeholder=" ">
+                            <input name="valor" type="number" pattern="^[R$\-\s]*[\d\.]*?([\,]\d{0,2})?\s*$" id="txtdeposito" class="form-control" placeholder=" ">
                             <label for="txtSenha">Valor da transação</label>
                         </div>
                         
@@ -157,20 +157,8 @@ if($result_conta){
                                         $url_destino = $base.'/movimentacao.php';
                                         echo $url_destino;
                                         header("Location: $url_destino");
-                                        break;    
-                                
-                                        case 3:
-                                            $result_fechar_conta = $conta_usuario_logado->FecharConta();
-                                            if($result_fechar_conta){
-                                                $_SESSION['msg'] = "<div class='alert alert-danger'> Conta Fechada com Sucesso! </div>";
-                                            }else{
-                                                $_SESSION['msg'] = "<div class='alert alert-danger'> Retire o dinheiro antes de fechar a conta!</div>";
-                                            }
-
-                                            $url_destino = $base.'/movimentacao.php';
-                                            echo $url_destino;
-                                            header("Location: $url_destino");
-                                            break;
+                                        break;
+                                        
                                 default:
                                     $_SESSION['msg'] = "Nenhuma das opções são válidas, por favor entre em contato com o SAC!";
                                     break;
@@ -200,6 +188,10 @@ if($result_conta){
                                 <tbody>
                                     <?php
 
+                                    if($historico_contas){
+
+                                    
+
                                         
                                         foreach ($historico_contas as $value) {
                                             $historico_conta_usuario = $value;
@@ -213,6 +205,7 @@ if($result_conta){
 
                                     <?php
                                         }
+                                    }
                                     ?>
                                 </tbody>
                             </table>
