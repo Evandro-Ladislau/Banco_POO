@@ -8,6 +8,7 @@ Projeto desenvolvido para exercício, prática e fixação de conhecimento em pr
 
 * PHP 8.
 * BANCO DE DADOS MYSQL.
+* Bootstrap 5.
 
 ## 🎁 Expressões de gratidão
 
