@@ -1,4 +1,7 @@
 <?php
+session_start(); //incializando a sessão.
+ob_start();
+
 require_once 'config.php';
 require_once 'banco.php';
 

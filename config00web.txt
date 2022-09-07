@@ -1,0 +1,8 @@
+@ppleiphone5
+
+senha banco: W-ZYSHMK2GhC@UjJ
+
+
+nome_bd: id19524482_evandisantos
+bd: id19524482_root
+hospedagem: localhost

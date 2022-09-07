@@ -1,4 +1,7 @@
 <?php
+session_start(); //incializando a sessão.
+ob_start();
+
 require_once 'usuario.php';
 require_once 'config.php';
 

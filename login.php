@@ -1,4 +1,6 @@
 <?php
+session_start(); //incializando a sessão.
+ob_start(); //iniciallizando o buffer de saida.
 
 include_once 'include\head.php';
 include_once 'config.php';

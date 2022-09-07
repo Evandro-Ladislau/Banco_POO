@@ -1,4 +1,7 @@
 <?php
+session_start(); //incializando a sessão.
+ob_start(); //iniciallizando o buffer de saida.
+
 require_once 'config.php';
 
 unset($_SESSION['id'], 
@@ -12,7 +15,10 @@ $_SESSION['bairro'],
 $_SESSION['cep'],
 $_SESSION['senha'],
 $_SESSION['conf_senha'],
+$_SESSION['seguranca']
 );
+
+//session_destroy();
 
 $_SESSION['msg'] = "<div class='alert alert-danger'> Deslogado com Sucesso! </div>";
 $url_destino = $base.'/login.php';

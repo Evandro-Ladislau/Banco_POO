@@ -1,8 +1,14 @@
 <?php
-
+session_start(); //incializando a sessão.
+ob_start(); //iniciallizando o buffer de saida.
+if (!isset($_SESSION['seguranca'])) {
+    
+exit;
+    
+}
+include_once 'include\head.php';
 require_once 'usuario.php';
 include_once 'config.php';
-include_once 'include\head.php';
 
 $usuario_logado = new Usuario($_SESSION['nome'],
                                 $_SESSION['email'],
@@ -67,12 +73,12 @@ $usuario_logado->setId($_SESSION['id']);
                 <div class="row justify-content-center">
                     <form method="POST" action="procAbrirConta.php" class="col-sm-10 col-md-8 col-lg-6">
                         <h1>Abrir Conta</h1>
-                         <?php
-                         if (isset($_SESSION['msg'])) {
+                        <?php
+                        if(isset($_SESSION['msg'])){
                             echo $_SESSION['msg'];
                             unset($_SESSION['msg']);
-                         }
-                         ?>  
+                        }
+                        ?> 
                         <div class="form-floating mb-3">
                         
                             <select name="id" id="" class="form-control">

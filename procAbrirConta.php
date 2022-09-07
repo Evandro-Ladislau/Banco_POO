@@ -1,8 +1,10 @@
 <?php
-
+session_start(); //incializando a sessão.
+ob_start();
 require_once 'config.php';
 require_once 'conta.php';
 require_once 'conexao.php';
+
 
 $SendAbrirConta = filter_input(INPUT_POST, 'SendAbrirConta');
 

@@ -1,5 +1,10 @@
 <?php
-
+session_start(); //incializando a sessão.
+ob_start(); //iniciallizando o buffer de saida.
+if (!isset($_SESSION['seguranca'])) {
+    
+    exit;
+}
 require_once 'conta.php';
 require_once 'usuario.php';
 include_once 'config.php';

@@ -1,4 +1,7 @@
 <?php
+session_start(); //incializando a sessão.
+ob_start(); //iniciallizando o buffer de saida.
+$_SESSION['seguranca'] = true; //essa variável de segurança permite que as outras paginas sejam abertas somente se ela for inicializada.
 
 include_once 'config.php';
 include_once 'include\head.php';

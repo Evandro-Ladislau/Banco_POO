@@ -1,5 +1,6 @@
 <?php
-
+session_start(); //incializando a sessão.
+ob_start();
 require_once "config.php";
 require_once 'usuario.php';
 require_once 'conta.php';
@@ -35,6 +36,7 @@ if($result_conta){
                                   $result_conta_usuario['senha'],
                                   $result_conta_usuario['saldo']
                                     );
+                                    
     
 }else{
         $_SESSION['msg'] = "<div class='alert alert-danger'> Você Não tem conta Aberta! </div>";
